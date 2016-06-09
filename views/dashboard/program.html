@@ -1,0 +1,87 @@
+<section class="content-header">
+  <h1>
+    Registro de Programas
+  </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <form id="form-program" action="createProgram" METHOD="POST">
+            <div>
+              <h3>Programa</h3>
+              <section>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="userName">Nombre del Programa</label>
+                    <input id="userName" name="Nombre" type="text" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label>Tipo de programa</label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="ProgramType" value="Especialidad" checked/> Especialidad
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramType" value="Maestría" /> Maestría
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramType" value="Doctorado" > Doctorado
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>Formato del programa</label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramFormat" value="Cuatrimestral" checked> Cuatrimestral
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramFormat" value="Semestral"> Semestral
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramFormat" value="Generacional" > Doctorado
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>Orientación del Programa</label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramOrientation" value="Profesional" checked> Profesional
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramOrientation" value="Investigación"> Investigación
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="ProgramOrientation" value="Industria/Empresa"> Industria/Empresa
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Duración del programa</label>
+                    <input id="userName" name="Duracion" type="text" class="form-control" placeholder="Cuatrimestres/Semestres"/>
+                  </div>
+                </div>
+              </section>
+            </div>
+        </form>
+    </div>
+  </div>
+</section><!-- /.content -->
+<script>
+  register.init();
+</script>

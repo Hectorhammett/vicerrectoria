@@ -1,0 +1,80 @@
+<div class="modal fade" id="modal-program" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal-program-header"></h4>
+      </div>
+      <div class="modal-body" id="modal-program-body">
+        <div id="program-content">
+            <script id='template' type='text/ractive'>
+              <div class="row">
+                <div class="col-sm-12">
+                  <h4>Nombre del programa</h4>
+                  <p>{{nombre}}</p>
+                  <h4>Tipo del programa</h4>
+                  {{ tipo }}
+                  <h4>Formato del programa</h4>
+                  {{ formato }}
+                  <h4>Duración del programa</h4>
+                  {{ duracion }}
+                  <h4>Total de alumnos en el programa</h4>
+                  {{ total }}
+                </div>
+              </div>
+            </script>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Alumnos registrados en el programa
+            </a>
+            <div class="collapse" id="collapseExample">
+              <div class="well" id="program-students">
+                <table id="table-program-students" class="table">
+                  <thead>
+                    <th>Matrícula</th>
+                    <th>Nombre</th>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="content-header">
+  <h1>
+    Programas Registrados
+  </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <table id="programs" class="table table-striped" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Nombre</th>
+                <th>Tipo de programa</th>
+                <th>Formato del Programa</th>
+                <th>Orientación del programa</th>
+                <th>Duración</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+  </div>
+</section><!-- /.content -->
+<script>
+  programs.init();
+</script>

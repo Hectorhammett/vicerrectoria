@@ -1,0 +1,111 @@
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Registro de Alumnos
+    </h1>
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <form id="form-new-student" action="createStudent" method="POST">
+              <h3>Datos Personales</h3>
+              <section>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="userName">Matrícula</label>
+                    <input id="userName" name="Matricula" type="text" class="form-control" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Nombre</label>
+                    <input id="userName" name="Nombre" type="text" class="form-control" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Apellido Paterno</label>
+                    <input id="userName" name="Paterno" type="text" class="form-control" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Apellido Materno</label>
+                    <input id="userName" name="Materno" type="text" class="form-control" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Correo Electrónico</label>
+                    <input id="userName" name="Email" type="text" class="form-control" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="userName">Teléfono</label>
+                    <input id="userName" name="Telefono" type="text" class="form-control" value="">
+                  </div>
+                </div>
+              </section>
+              <h3>Programa</h3>
+              <section>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="programa">Programa</label>
+                    <select name="Programa" class="form-control" id="select-program">
+                      <script id="template" type="text/ractive">
+                      {{#if programs}}
+                        {{#each programs}}
+                          <option value="{{ id }}">{{ nombre }}</option>
+                        {{/each}}
+                      {{else}}
+                        <option value="-1">No hay ningún programa registrado.</option>
+                      {{/if}}
+                      </script>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="programa">No. de becario(Opcional)</label>
+                    <input type="text" name="NoBecario" class="form-control" value=""/>
+                  </div>
+                  <div class="form-group">
+                    <label for="programa">Campus</label>
+                    <input type="text" name="Campus" class="form-control" value=""/>
+                  </div>
+                </div>
+              </section>
+              <h3>Carga Académica</h3>
+              <section>
+                <div id="subjects">
+                  <h4>Agregar la carga académica del primer semestre del alumno</h4>
+                  <button type="button" class="btn btn-primary" id="addSubject">Agregar Materia</button>
+                  <div id="semester" class="row">
+                  </div>
+                </div>
+              </section>
+              <h3>Trabajo de Titulación</h3>
+              <section>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="TutorName">Nombre de Tutor</label>
+                    <input type="text" class="form-control" name="NombreTutor" value=""/>
+                  </div>
+                  <div class="form-group">
+                    <label for="Line">Línea de Generación y Ampliación del Conocimiento</label>
+                    <input type="text" class="form-control" name="Linea" value=""/>
+                  </div>
+                  <div class="form-group">
+                    <label>Tipo de Trabajo</label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio" name="TipoTrabajo" value="Tesis" checked/> Tesis
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="TipoTrabajo" value="Tesina" /> Tesina
+                    </label>
+                  </div>
+                  <div class="radio-inline">
+                    <label>
+                      <input type="radio"  name="TipoTrabajo" value="Trabajo Terminal" > Trabajo Terminal
+                    </label>
+                  </div>
+                </div>
+              </section>
+      </form>
+  </section><!-- /.content -->
+  <script>
+    registerStudent.init();
+  </script>

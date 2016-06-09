@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html ng-app="app">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sistema de Seguimento a la trayectoria de estudiantes de posgrado.</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.4 -->
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <!-- Material Design -->
+    <link href="public\css\material\material.min.css" rel="stylesheet"/>
+    <link href="public\css\material\ripples.min.css" rel="stylesheet"/>
+    <link href="public\css\material\roboto.css" rel="stylesheet"/>
+    <link href="public\css\css.css" rel="stylesheet"/>
+    <link href="public\js\x-editable\css\bootstrap-editable.css" rel="stylesheet"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="public/assets/font-awesome/css/font-awesome.min.css"/>
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="public/css/AdminLTE.css">
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+
+    <!-- Datatables Css -->
+    <link href="public/css/table.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="public/css/skin-blue.css">
+
+    <!-- Steps css -->
+    <link href="public/css/jquery.steps.css" rel="stylesheet"/>
+    <link href="public/css/overview/overview.css" rel="stylesheet"/>
+    <link href="public/js/datepicker/css/bootstrap-datepicker3.css" rel="stylesheet"/>
+  </head>
+  <!--
+  BODY TAG OPTIONS:
+  =================
+  Apply one or more of the following classes to get the
+  desired effect
+  |---------------------------------------------------------|
+  | SKINS         | skin-blue                               |
+  |               | skin-black                              |
+  |               | skin-purple                             |
+  |               | skin-yellow                             |
+  |               | skin-red                                |
+  |               | skin-green                              |
+  |---------------------------------------------------------|
+  |LAYOUT OPTIONS | fixed                                   |
+  |               | layout-boxed                            |
+  |               | layout-top-nav                          |
+  |               | sidebar-collapse                        |
+  |               | sidebar-mini                            |
+  |---------------------------------------------------------|
+  -->
+  <body class="skin-blue sidebar-mini">
+    <div class="loading-main"></div>
+    <div class="wrapper">
+
+      <!-- Main Header -->
+      <header class="main-header">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini">SSTEP</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg">SSTEP</span>
+        </a>
+
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-static-top navbar-material-orange-500" role="navigation">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+          </a>
+          <!-- Navbar Right Menu -->
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+              <!-- Messages: style can be found in dropdown.less-->
+              <li class="dropdown messages-menu">
+                <!-- Menu toggle button -->
+
+
+              <!-- User Account Menu -->
+              <li class="dropdown user user-menu">
+                <!-- Menu Toggle Button -->
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                  <span class="hidden-xs"><?php
+                    setlocale(LC_TIME, 'es');
+                    echo ucfirst(utf8_encode(\Carbon\Carbon::today()->formatLocalized('%A %d de %B de %Y')));
+                  ?></span>
+                </a>
+              </li>
+              <!-- Control Sidebar Toggle Button -->
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+
+          <!-- Sidebar user panel (optional) -->
+
+
+          <!-- search form (Optional) -->
+
+          <!-- /.search form -->
+
+          <!-- Sidebar Menu -->
+          <ul class="sidebar-menu">
+            <li class="header">MENÚ PRINCIPAL</li>
+            <!-- Optionally, you can add icons to the links -->
+            <li class=""><a href="views/dashboard/search.html"><i class="fa fa-link"></i> <span>Búsqueda de Alumno</span></a></li>
+            <li class=""><a href="views/dashboard/programs.html"><i class="fa fa-link"></i> <span>Programas Registrados</span></a></li>
+            <li class=""><a href="views/dashboard/program.html" id="link-register-program"><i class="fa fa-link"></i> <span>Registrar Programa</span></a></li>
+            <li class=""><a href="views/dashboard/register.html" id="link-register-student"><i class="fa fa-link"></i> <span>Registrar Alumno</span></a></li>
+            <!-- <li class="treeview">
+              <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                <li><a href="#">Link in level 2</a></li>
+                <li><a href="#">Link in level 2</a></li>
+              </ul>
+            </li> -->
+          </ul><!-- /.sidebar-menu -->
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper" id="page-holder">
+
+      </div><!-- /.content-wrapper -->
+
+      <!-- Main Footer -->
+      <footer class="main-footer">
+        <!-- To the right -->
+        <div class="pull-right hidden-xs">
+          Departamento de Posgrado e Investigación
+        </div>
+        <!-- Default to the left -->
+        <strong>Copyright &copy; <?php echo date("Y")?> </strong> Universidad Autónoma de Baja California.
+      </footer>
+
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+        <!-- Create the tabs -->
+        <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+          <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- Home tab content -->
+          <div class="tab-pane active" id="control-sidebar-home-tab">
+            <h3 class="control-sidebar-heading">Recent Activity</h3>
+            <ul class="control-sidebar-menu">
+              <li>
+                <a href="javascript::;">
+                  <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+                  <div class="menu-info">
+                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+                    <p>Will be 23 on April 24th</p>
+                  </div>
+                </a>
+              </li>
+            </ul><!-- /.control-sidebar-menu -->
+
+            <h3 class="control-sidebar-heading">Tasks Progress</h3>
+            <ul class="control-sidebar-menu">
+              <li>
+                <a href="javascript::;">
+                  <h4 class="control-sidebar-subheading">
+                    Custom Template Design
+                    <span class="label label-danger pull-right">70%</span>
+                  </h4>
+                  <div class="progress progress-xxs">
+                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                  </div>
+                </a>
+              </li>
+            </ul><!-- /.control-sidebar-menu -->
+
+          </div><!-- /.tab-pane -->
+          <!-- Stats tab content -->
+          <div class="tab-pane" id="control-sidebar-stats-tab">Stats Tab Content</div><!-- /.tab-pane -->
+          <!-- Settings tab content -->
+          <div class="tab-pane" id="control-sidebar-settings-tab">
+            <form method="post">
+              <h3 class="control-sidebar-heading">General Settings</h3>
+              <div class="form-group">
+                <label class="control-sidebar-subheading">
+                  Report panel usage
+                  <input type="checkbox" class="pull-right" checked>
+                </label>
+                <p>
+                  Some information about this general settings option
+                </p>
+              </div><!-- /.form-group -->
+            </form>
+          </div><!-- /.tab-pane -->
+        </div>
+      </aside><!-- /.control-sidebar -->
+      <!-- Add the sidebar's background. This div must be placed
+           immediately after the control sidebar -->
+      <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+
+    <!-- REQUIRED JS SCRIPTS -->
+
+    <!-- jQuery 2.1.4 -->
+    <script src="public/js/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.4 -->
+    <script src="public/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="public/js/app.min.js"></script>
+    <!-- Main Javascript -->
+    <script src="public/js/main.js"></script>
+    <!-- Steps -->
+    <script src="public/js/jquery.steps.min.js"></script>
+    <!-- Notify -->
+    <script src="public/assets/notify/notify.js"></script>
+    <!-- Ractive -->
+    <script src='public/assets/ractive/ractive.js'></script>
+    <!-- X Editable -->
+    <script src='public/js/x-editable/js/bootstrap-editable.min.js'></script>
+    <!-- Datepicker -->
+    <script src="public/js/datepicker/js/bootstrap-datepicker.js"></script>
+
+    <!-- Pages Javascript -->
+    <script src="public/javascripts/search.js"></script>
+    <script src="public/javascripts/register.js"></script>
+    <script src="public/javascripts/programs.js"></script>
+    <script src="public/js/dataTables/media/js/jquery.dataTables.min.js"></script>
+    <script src="public/js/table.js"></script>
+    <script src="public/javascripts/registerStudent.js"></script>
+    <script src="public/javascripts/overview.js"></script>
+    <!-- <script src="js/register/addSubject.js"></script> -->
+
+  </body>
+</html>

@@ -1,0 +1,288 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Revisión del alumno en programa      <button class="btn btn-primary pull-right btn-pdf">Descargar Reporte</button>
+  </h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="row">
+        <script id="overview-header" type="text/ractive">
+          <div class="col-sm-12">
+            <h3>Nombre del programa</h3>
+            {{nombrePrograma}}
+          </div>
+          <div class="col-sm-12">
+            <h3>Datos del alumno</h3>
+            <div class="form-group">
+              <label>Matrícula</label>
+              <a href="#" id="Matricula" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{matricula}}</a>
+            </div>
+            <div class="form-group">
+              <label>Nombre</label>
+              <a href="#" id="Nombre" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{nombre}}</a>
+            </div>
+            <div class="form-group">
+              <label>Apellido Paterno</label>
+              <a href="#" id="Paterno" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{paterno}}</a>
+            </div>
+            <div class="form-group">
+              <label>Apellido Materno</label>
+              <a href="#" id="Materno" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{materno}}</a>
+            </div>
+            <div class="form-group">
+              <label>Correo Electrónico</label>
+              <a href="#" id="Email" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{email}}</a>
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <a href="#" id="Telefono" class="editables" data-type="text" data-pk="" data-url="/post" data-title="Enter username">{{telefono}}</a>
+            </div>
+          </div>
+        </script>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Actividad del Alumno en el programa</h3>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label>
+              @if($program->formato == 'Semestral')
+                {{count($units)}} semestres cursados
+              @else
+                {{count($units)}} cuatrimestres cursados
+              @endif
+            </label>
+            <select class="form-control" size="10" id="unit-select">
+              @for($i = 0; $i < count($units); $i++)
+                <option value="{{$units[$i]->id}}">Semestre {{$i + 1}}</option>
+              @endfor
+            </select>
+          </div>
+          <div class="form-group">
+            <button type="button" class="btn btn-primary btn-block" id="add-unit">Agregar Semestre/Cuatrimestre</button>
+          </div>
+        </div>
+        <div class="col-sm-8 unit-overview">
+          <div class="unit-holder">
+
+          </div>
+          <div class="spinner">
+            <i class="fa fa-spinner fa-5x fa-pulse"></i>
+          </div>
+          <div class="no-unit">
+            <h3>No se ha seleccionado ningún semestre/cuatrimestre.</h3>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Trabajo de Titulación</h3>
+        </div>
+        <div class="col-sm-6">
+          <h3>Notas</h3>
+        </div>
+        <div class="col-sm-6">
+          <form action="{{URL::to('updateWork')}}" method="POST">
+            {{csrf_field()}}
+            <div class="form-group">
+              <input type="hidden" name="workId" value="{{$work->id}}"/>
+              <label>Título de tutor</label>
+              <input type="text" class="form-control" name="Tutor" value="{{$work->nombreTutor}}"/>
+            </div>
+            <div class="form-group">
+              <label>Línea de Generación y Ampliación del Conocimiento</label>
+              <input type="text" class="form-control" name="Lines" value="{{$work->linea}}"/>
+            </div>
+            <div class="form-group">
+              <label>Tipo de trabajo</label>
+            </div>
+              <div class="radio-inline">
+                <label>
+                  <input type="radio" name="TipoTrabajo" value="Tesis" @if($work->tipo === "Tesis" ){{"checked"}}@endif/> Tesis
+                </label>
+              </div>
+              <div class="radio-inline">
+                <label>
+                  <input type="radio"  name="TipoTrabajo" value="Tesina" @if($work->tipo === "Tesina" ){{"checked"}}@endif/> Tesina
+                </label>
+              </div>
+              <div class="radio-inline">
+                <label>
+                  <input type="radio"  name="TipoTrabajo" value="Trabajo Terminal" @if($work->tipo === "Trabajo Terminal" ){{"checked"}}@endif> Trabajo Terminal
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-sm-8">
+                  <button type="submit" class="btn btn-primary btn-block">Actualizar Programa</button>
+                </div>
+              </div>
+          </form>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-12" id="written-notes">
+              @if(count($work->notes) == 0)
+                <h3>No hay notas registradas para el trabajo de titulación</h3>
+              @else
+                <div class="row">
+                  @foreach($work->notes as $note)
+                    <div class="col-sm-12">
+                      <div class="well">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            {{$note->notas}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <a class="btn btn-danger" href="{{URL::to('deleteNote')}}?idNote={{$note->id}}">Borrar nota</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              @endif
+            </div>
+            <div class="col-sm-12">
+              <button type="button" class="btn btn-primary btn-block" id="add-note">Agregar Nota</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+          <div class="col-sm-12">
+            <h3>Movilidad Estudiantil en el programa.</h3>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label>Movilidades registradas</label>
+              <select id="movilities" class="form-control" size="10">
+                @foreach($movilities as $movility)
+                  <option value="{{$movility->id}}">{{$movility->nombre}}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-primary btn-block" id="add-movility">Agregar Movilidad</button>
+            </div>
+          </div>
+          <div class="col-sm-8" id="movility-holder">
+            <div class="none">
+              <h3>No se ha seleccionado ninguna movilidad.</h3>
+            </div>
+            <div class="spinner">
+              <i class="fa fa-spinner fa-5x fa-pulse"></i>
+            </div>
+            <form id="stored-movility" action="{{URL::to('/updateMovility')}}" method="POST">
+              {{csrf_field()}}
+              <input type="hidden" name="movilityId" id="movilityId"/>
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" name="Nombre" id="movility-name" class="form-control"/>
+              </div>
+              <div class="form-group">
+                <label>Destino</label>
+                <input type="text" name="Destino" id="movility-destiny" class="form-control"/>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Inicio</label>
+                <input type="text" name="Start" id="movility-start" class="form-control datepicker"/>
+              </div>
+              <div class="form-group">
+                <label>Fecha de Finalización</label>
+                <input type="text" name="End" id="movility-end" class="form-control datepicker"/>
+              </div>
+              <div class="form-group">
+                <label>Resultado</label>
+                <input type="text" name="Resultado" id="movility-result" class="form-control"/>
+              </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-danger" id="movility-delete">Borrar movilidad</button>
+              <button type="submit" class="btn btn-primary">Actualizar movilidad</button>
+            </form>
+            </div>
+          </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Productividad</h3>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <select class="form-control" id="productivities" size="10">
+              @foreach($productivities as $productivity)
+                <option value="{{$productivity->id}}">{{$productivity->titulo}}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group">
+            <button class="btn-primary btn btn-block" id="productivity-add">Agregar trabajo de productividad</button>
+          </div>
+        </div>
+        <div class="col-sm-8" id="productivity-holder">
+          <div class="none">
+            <h3>No se ha seleccionado ningun trabajo de Productividad.</h3>
+          </div>
+          <div class="spinner">
+            <i class="fa fa-spinner fa-5x fa-pulse"></i>
+          </div>
+          <form action="{{URL::to('/updateProductivity')}}" method="POST">
+            {{csrf_field()}}
+            <input type="hidden" name="productivityId" id="productivityId"/>
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" name="Nombre"  id="productivity-name" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Fecha</label>
+              <input type="text" name="Start" id="productivity-date" class="form-control datepicker" />
+            </div>
+            <div class="form-group">
+              <label>Categoría</label>
+              <input type="text" name="Category" id="productivity-category" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Tipo</label>
+              <input type="text" name="Type" id="productivity-type" class="form-control" />
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-danger" id="productivity-delete">Borrar Trabajo de Productividad</button>
+              <button type="submit" class="btn btn-primary">Actualizar Trabajo de Productividad</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        @if($state === 'activo')
+          <div class="col-sm-12">
+            <h3>Terminar programa</h3>
+          </div>
+          <div class="col-sm-4">
+            <button class="btn btn-primary btn-block btn-lg" id="terminate-program">Terminar programa</button>
+          </div>
+        @else
+        <div class="col-sm-12">
+          <h3>Reactivar programa</h3>
+        </div>
+        <div class="col-sm-4">
+          <a class="btn btn-primary btn-block btn-lg" href="{{URL::to('reactivateProgram')}}?studentId={{$student->matricula}}&programId={{$program->id}}">Reactivar Programa</a>
+        </div>
+        @endif
+      </div>
+    </div>
+  </div>
+</section><!-- /.content -->
+<script>
+  overview.init();
+</script>
