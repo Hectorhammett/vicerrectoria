@@ -11,6 +11,9 @@ var Student = Bookshelf.Model.extend({
   },
   works: function(){
     return this.hasMany(Work,"idEstudiante");
+  },
+  units: function(){
+    return this.hasMany(Unit,"idEstudiante");
   }
 });
 

@@ -9,7 +9,7 @@
 <section class="content">
   <div class="row">
     <div class="col-sm-12">
-      <div class="row">
+      <div class="row" id="overview-header-holder">
         <script id="overview-header" type="text/ractive">
           <div class="col-sm-12">
             <h3>Nombre del programa</h3>
@@ -50,27 +50,50 @@
           <h3>Actividad del Alumno en el programa</h3>
         </div>
         <div class="col-sm-4">
-          <div class="form-group">
-            <label>
-              @if($program->formato == 'Semestral')
-                {{count($units)}} semestres cursados
-              @else
-                {{count($units)}} cuatrimestres cursados
-              @endif
-            </label>
-            <select class="form-control" size="10" id="unit-select">
-              @for($i = 0; $i < count($units); $i++)
-                <option value="{{$units[$i]->id}}">Semestre {{$i + 1}}</option>
-              @endfor
-            </select>
+          <div class="form-group" id="activity-holder">
+            <script id="activity" type="text/ractive">
+              <label>
+                {{ total }} {{formato}} registrados
+              </label>
+              <select class="form-control" size="10" id="unit-select">
+                {{ #if units }}
+                  {{#each units:num}}
+                    <option value="{{ id }}">Semestre {{ num + 1 }}</option>
+                  {{/each}}
+                {{ else }}
+                  <option value="-1">El Alumno no tiene {{ formato }} registrados.</option>
+                {{ /if }}
+              </select>
+            </script>
           </div>
           <div class="form-group">
             <button type="button" class="btn btn-primary btn-block" id="add-unit">Agregar Semestre/Cuatrimestre</button>
           </div>
         </div>
         <div class="col-sm-8 unit-overview">
-          <div class="unit-holder">
-
+          <div class="units-holder" id="units-holder">
+            <script id="units-template" type="text/ractive">
+              {{ #if subjects }}
+                {{ #each subjects:num }}
+                  <div class="col-lg-4 col-md-2 singleSubject">
+                  <div class="panel panel-default">
+                  <div class="panel-body">
+                  <div class="form-group">
+                  <label for="subjectName">
+                  <span class="subjectNumber">{{num + 1}}</span>.- Nombre de la Materia</label>
+                  <input type="text" class="form-control" name="Materias" value="{{ nombre }}" disabled="">
+                  </div>
+                  <div class="form-group">
+                  <label for="subjectName">Calificación</label>
+                  <input type="text" class="form-control" data-id="{{ id }}" name="Grades" value="{{ calificacion }}"></div>
+                  </div>
+                  </div>
+                  </div>                
+                {{ /each }}
+                <div class="col-sm-12"><button class="btn btn-primary" id="save-unit-grades">Guardar Calificaciones</button><button class="btn btn-default" id="edit-unit">Editar Semestre/Cuatrimestre</button></div>
+              {{ else }}
+              {{ /if }}
+            </script>
           </div>
           <div class="spinner">
             <i class="fa fa-spinner fa-5x fa-pulse"></i>
