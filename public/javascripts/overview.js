@@ -7,20 +7,47 @@
   var overviewHeader;
   var activity;
   var unitsHolder;
+  var editUnit;
+  var counter;
+  var currentStudent;
+  var currentProgram;
 
   overview.init = function(){
+    counter = 1;
     overviewHeader = new Ractive({
       el: '#overview-header-holder',
       template: '#overview-header'
     });
     activity = new Ractive({
       el: '#activity-holder',
-      template: '#activity'
+      template: '#activity',
+      empty: ""
     });
     unitsHolder = new Ractive({
       el: '#units-holder',
       template: '#units-template'
     });
+    editUnit = new Ractive({
+      el: '#edit-semester-holder',
+      template: '#edit-semester-template'
+    });
+    editUnit.on({
+      addItem: function(){
+        this.push( "subjects", {
+        nombre: ""
+      })
+      },
+      deleteItem: function(event){
+        console.log(event.index);
+        this.splice("subjects", event.index.num, 1);
+      },
+      updateSemester: function(){
+        if(this.get("subjects").length > 0)
+          saveEditedSemester(this.get("subjects"),this.get("unitId"));
+        else
+          $.notify("No se puede guardar un semestre/cuatrimestre sin materias","error");
+      }
+    })
     new Estudiante({
       matricula: global.student
     }).fetch({
@@ -33,8 +60,10 @@
         }}
       ]
     }).then(function(estudiante){
+      currentStudent = estudiante;
       estudiante = estudiante.toJSON();
       programa = estudiante.programs[0];
+      currentProgram = programa;
       console.log(estudiante);
       overviewHeader.set({
         matricula: estudiante.matricula,
@@ -44,11 +73,7 @@
         email: estudiante.email,
         telefono: estudiante.telefono
       });
-      activity.set({
-        total:estudiante.units.length, 
-        formato: (programa.formato == "semestral")? "Semestres" : "Cuatrimestres",
-        units: estudiante.units
-      })
+      loadActivity(estudiante,programa);
     }).catch(function(err){
       $.notify("Hubo un error. Favor de reiniciar la aplicación","error");
       console.error(err);
@@ -69,7 +94,8 @@
       materias = unidades.subjects;
       console.log(unidades);
       unitsHolder.set({
-        subjects: materias
+        subjects: materias,
+        unitId: unidades.id
       });
       spinner.fadeOut(25);
     }).catch(function(err){
@@ -94,4 +120,124 @@
     });
   })
 
+   $(document).on("click","#addSubjectO",function(){
+    var subject = document.createElement("div");
+    $(subject).addClass("col-sm-4 singleSubject");
+    $(subject).html('<div class="panel panel-default"><div class="panel-body"><div class="form-group"><label for="subjectName"><span class="subjectNumber">' + counter++ + '</span>.- Nombre de la Materia</label><input type="text" class="form-control" name="Materias"/></div><button type="button" class="btn btn-default btn-raised" id="removeSubjectO">Quitar Materia</button></div></div>');
+    $("#semester").append(subject);
+  });
+
+  $(document).on("click","#addSubjectEditableO",function(){
+    var subject = document.createElement("div");
+    $(subject).addClass("col-sm-4 singleSubject");
+    $(subject).html('<div class="panel panel-default"><div class="panel-body"><div class="form-group"><label for="subjectName"><span class="subjectNumber">' + counter++ + '</span>.- Nombre de la Materia</label><input type="text" class="form-control" name="Materias"/></div><button type="button" class="btn btn-default btn-raised" id="removeSubjectO">Quitar Materia</button></div></div>');
+    $("#edit-semester").append(subject);
+  });
+
+  $(document).on("click","#removeSubjectO",function(){
+    $(this).closest("div.col-sm-4").remove();
+    var inner = 1;
+    $("span.subjectNumber").each(function(){
+      $(this).text(inner++);
+    });
+    counter--;
+  });
+
+  $(document).on("click","#add-unit",function(){
+    $("#modal-unit").modal("show").one("hidden.bs.modal",function(){
+      $("#semester").empty();
+      counter = 1;
+    });
+  })
+
+   $(document).on("click","#new-unit-save",function(){
+     var button = this;
+     new Unidad({
+      idEstudiante: global.student,
+      idPrograma: global.program   
+     }).save().then(function(unidad){
+       unidad = unidad.toJSON();
+       var promises = [];
+       $("input[name='Materias']").each(function(index,element){
+          var promise = new Materia({
+            idUnidad: unidad.id,
+            nombre: element.value
+          }).save();
+          promises.push(promise);
+       })
+       return Promise.all(promises);
+     }).then(function(values){
+      $.notify("El semestre/cuatrimestre se ha guardado correctamente","success");
+       $("#modal-unit").modal("hide");
+       return currentStudent.refresh({
+        withRelated: [
+          {programs: function(query){
+            query.where("idPrograma",global.program)
+          }},
+          {units: function(query){
+            query.where("idPrograma",global.program)
+          }}
+        ]
+       });
+     }).then(function(estudiante){
+       estudiante = estudiante.toJSON();
+       loadActivity(estudiante,currentProgram);
+     }).catch(function(err){
+      $.notify("Hubo un error. Favor de reiniciar la aplicación","error");
+      console.error(err);
+     });
+  })
+
+  $(document).on("click","#edit-unit",function(){
+    counter = unitsHolder.get("subjects").length + 1;
+    editUnit.set({
+      subjects: unitsHolder.get("subjects"),
+      unitId: this.dataset.id
+    });
+    $("#modal-edit-unit").modal("show").one("hidden.bs.modal",function(){
+      editUnit.reset();
+    });
+  })
+
+  function saveEditedSemester(subjects,idUnit){
+    console.log(subjects, idUnit);
+    new Materia().where({
+        idUnidad: idUnit
+    }).destroy().then(function(){
+      var promises = [];
+      for(x in subjects){
+        var promise = new Materia({
+          nombre: subjects[x].nombre,
+          idUnidad: idUnit
+        }).save();
+        promises.push(promise);
+      }
+      return Promise.all(promises);
+    }).then(function(values){
+      console.log(values);
+      $.notify("El semestre se ha actualizado.","success");
+      return new Materia().where({
+        idUnidad: idUnit,
+      }).fetchAll()
+    }).then(function(subjects){
+      var materias = subjects.toJSON();
+      console.log(materias);
+      unitsHolder.set({
+        subjects: materias,
+        unitId: idUnit
+      });
+      $("#modal-edit-unit").modal("hide");
+    }).catch(function(err){
+      $.notify("Hubo un error. Favor de reiniciar la aplicación","error");
+      console.error(err);
+    });
+  }
+
+  function loadActivity(estudiante,programa){
+    activity.set({
+        total:estudiante.units.length, 
+        formato: (programa.formato == "semestral")? "Semestres" : "Cuatrimestres",
+        units: estudiante.units
+      })
+  }
 }( window.overview = window.overview || {}, jQuery ));

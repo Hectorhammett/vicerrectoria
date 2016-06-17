@@ -1,3 +1,69 @@
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-unit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Agregar Semestre/Cuatrimestre</h4>
+      </div>
+      <div class="modal-body" id="modal-unit-body">
+        <div id="subjects">
+          <h4>Agregar la carga académica del semestre/cuatrimestre del alumno</h4>
+          <button type="button" class="btn btn-primary" id="addSubjectO">Agregar Materia</button>
+          <div id="semester" class="row">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="new-unit-save">Guardar Semestre/Cuatrimestre</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-edit-unit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+     <div id="edit-semester-holder">
+        <script id="edit-semester-template" type="text/ractive">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Editar Semestre/Cuatrimestre</h4>
+      </div>
+      <div class="modal-body" id="modal-unit-body">
+        <div id="subjects">
+          <h4>Editar la carga académica del semestre/cuatrimestre del alumno</h4>
+            <button type="button" on-click="addItem" class="btn btn-primary">Agregar Materia</button>
+            <div id="edit-semester" class="row">
+               {{ #if subjects }}
+                {{ #each subjects:num }}
+                  <div class="col-sm-4 singleSubject">
+                  <div class="panel panel-default">
+                  <div class="panel-body">
+                  <div class="form-group"><label for="subjectName"><span class="subjectNumber">{{num + 1}}</span>.- Nombre de la Materia</label><input type="text" class="form-control" name="Materias" value="{{nombre}}">
+                  </div>
+                  <button type="button" on-click="deleteItem" class="btn btn-default btn-raised">Quitar Materia</button>
+                  </div>
+                  </div>
+                  </div>     
+                {{ /each }}
+              {{ /if }}
+              </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-danger" on-click="deleteSemester">Borrar Semestre/Cuatrimestre</button>
+        <button type="button" class="btn btn-primary" on-click="updateSemester">Guardar Semestre/Cuatrimestre</button>
+      </div>
+       </script>  
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -81,7 +147,7 @@
                   <div class="form-group">
                   <label for="subjectName">
                   <span class="subjectNumber">{{num + 1}}</span>.- Nombre de la Materia</label>
-                  <input type="text" class="form-control" name="Materias" value="{{ nombre }}" disabled="">
+                  <input type="text" class="form-control" value="{{ nombre }}" disabled="">
                   </div>
                   <div class="form-group">
                   <label for="subjectName">Calificación</label>
@@ -90,8 +156,7 @@
                   </div>
                   </div>                
                 {{ /each }}
-                <div class="col-sm-12"><button class="btn btn-primary" id="save-unit-grades">Guardar Calificaciones</button><button class="btn btn-default" id="edit-unit">Editar Semestre/Cuatrimestre</button></div>
-              {{ else }}
+                <div class="col-sm-12"><button class="btn btn-primary" id="save-unit-grades">Guardar Calificaciones</button><button class="btn btn-default" data-id="{{ unitId }}" id="edit-unit">Editar Semestre/Cuatrimestre</button></div>
               {{ /if }}
             </script>
           </div>
