@@ -14,6 +14,12 @@ var Student = Bookshelf.Model.extend({
   },
   units: function(){
     return this.hasMany(Unit,"idEstudiante");
+  },
+  notes: function(){
+    return this.hasMany(Note,"idEstudiante").through(Work,'idTrabajo');
+  },
+  movilities: function(){
+    return this.hasMany(Movility,"idEstudiante");
   }
 });
 
@@ -60,6 +66,24 @@ var Work =  Bookshelf.Model.extend({
   student: function(){
     return this.belongsTo(Student,"idEstudiante");
   },
+  notes: function(){
+    return this.hasMany(Note,"idTrabajo");
+  }
+});
+
+var Note =  Bookshelf.Model.extend({
+  tableName: 'NotaTrabajo',
+  idAttribute: 'id',
+  hasTimestamps: false,
+  work: function(){
+    return this.belongsTo(Work,"idTrabajo");
+  }
+});
+
+var Movility =  Bookshelf.Model.extend({
+  tableName: 'Movilidad',
+  idAttribute: 'id',
+  hasTimestamps: false,
 });
 
 models["Student"] = Student;
@@ -67,6 +91,8 @@ models["Program"] = Program;
 models["Unit"] = Unit;
 models["Subject"] = Subject;
 models["Work"] = Work;
+models["Note"] = Note;
+models["Movility"] = Movility;
 
 module.exports = function(model){
   return models[model];

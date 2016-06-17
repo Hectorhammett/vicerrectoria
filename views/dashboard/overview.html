@@ -64,6 +64,74 @@
   </div>
 </div>
 
+<!-- Modal para agregar notas -->
+<div class="modal fade bs-example-modal-lg" id="modal-add-note" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Agregar nota</h4>
+      </div>
+      <div class="modal-body" id="modal-movility-body">
+        <div class="form-group">
+          <textarea class="form-control" name="Note" rows="10" placeholder="Texto de la nota"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="save-new-note">Guardar Nota</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar  movilidad -->
+<div class="modal fade bs-example-modal-lg" id="modal-add-movility" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Agregar Movilidad</h4>
+      </div>
+      <div class="modal-body" id="modal-movility-body">
+        <div id="subjects">
+          <h4>Llenar la información sobre la movilidad del alumno</h4>
+          <form action="{{URL::to('/addMovility')}}" method="post">
+            {{csrf_field()}}
+            <input type="hidden" name="StudentId" value="{{$student->matricula or ""}}">
+            <input type="hidden" name="ProgramId" value="{{$program->id or ""}}">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" name="Nombre" class="form-control" value="{{old('Nombre')}}"/>
+            </div>
+            <div class="form-group">
+              <label>Fecha de Inicio</label>
+              <input type="text" name="Start" class="form-control datepicker" value="{{old('Start')}}"/>
+            </div>
+            <div class="form-group">
+              <label>Fecha de Finalización</label>
+              <input type="text" name="End" class="form-control datepicker" value="{{old('End')}}"/>
+            </div>
+            <div class="form-group">
+              <label>Destino</label>
+              <input type="text" name="Destino" class="form-control" value="{{old('Destrino')}}"/>
+            </div>
+            <div class="form-group">
+              <label>Resultado</label>
+              <input type="text" name="Resultado" class="form-control" value="{{old('Resultado')}}"/>
+            </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary" >Guardar Movilidad</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -176,72 +244,72 @@
         <div class="col-sm-6">
           <h3>Notas</h3>
         </div>
-        <div class="col-sm-6">
-          <form action="{{URL::to('updateWork')}}" method="POST">
-            {{csrf_field()}}
+        <div class="col-sm-6" id="work-info-holder">
+          <script id="work-info-template" type="text/ractive">
             <div class="form-group">
-              <input type="hidden" name="workId" value="{{$work->id}}"/>
-              <label>Título de tutor</label>
-              <input type="text" class="form-control" name="Tutor" value="{{$work->nombreTutor}}"/>
+              <label>Nombre de tutor</label>
+              <input type="text" class="form-control" name="Tutor" value="{{ trabajo.nombreTutor }}"/>
             </div>
             <div class="form-group">
               <label>Línea de Generación y Ampliación del Conocimiento</label>
-              <input type="text" class="form-control" name="Lines" value="{{$work->linea}}"/>
+              <input type="text" class="form-control" name="Lines" value="{{ trabajo.linea }}"/>
             </div>
             <div class="form-group">
               <label>Tipo de trabajo</label>
             </div>
               <div class="radio-inline">
                 <label>
-                  <input type="radio" name="TipoTrabajo" value="Tesis" @if($work->tipo === "Tesis" ){{"checked"}}@endif/> Tesis
+                  <input type="radio" name="TipoTrabajo" value="Tesis" {{#if trabajo.tipo==='Tesis'}}checked{{/if}}/> Tesis
                 </label>
               </div>
               <div class="radio-inline">
                 <label>
-                  <input type="radio"  name="TipoTrabajo" value="Tesina" @if($work->tipo === "Tesina" ){{"checked"}}@endif/> Tesina
+                  <input type="radio"  name="TipoTrabajo" value="Tesina" {{#if trabajo.tipo==='Tesina'}}checked{{/if}}/> Tesina
                 </label>
               </div>
               <div class="radio-inline">
                 <label>
-                  <input type="radio"  name="TipoTrabajo" value="Trabajo Terminal" @if($work->tipo === "Trabajo Terminal" ){{"checked"}}@endif> Trabajo Terminal
+                  <input type="radio"  name="TipoTrabajo" value="Trabajo Terminal" {{#if trabajo.tipo==='Trabajo Terminal'}}checked{{/if}}> Trabajo Terminal
                 </label>
               </div>
               <div class="row">
                 <div class="col-sm-8">
-                  <button type="submit" class="btn btn-primary btn-block">Actualizar Programa</button>
+                  <button type="submit" class="btn btn-primary btn-block" on-click="updateWork">Actualizar Trabajo</button>
                 </div>
               </div>
-          </form>
+          </script>
         </div>
         <div class="col-sm-6">
-          <div class="row">
-            <div class="col-sm-12" id="written-notes">
-              @if(count($work->notes) == 0)
-                <h3>No hay notas registradas para el trabajo de titulación</h3>
-              @else
-                <div class="row">
-                  @foreach($work->notes as $note)
-                    <div class="col-sm-12">
-                      <div class="well">
-                        <div class="row">
-                          <div class="col-sm-12">
-                            {{$note->notas}}
+          <div class="row" id="notes-holder">
+            <script id="notes-template" type="text/ractive">
+              <div class="col-sm-12" >
+                {{ #if notes }}
+                  <div class="row">
+                      {{#each notes}}
+                        <div class="col-sm-12">
+                          <div class="well">
+                            <div class="row">
+                              <div class="col-sm-12">
+                                {{notas}}
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <a class="btn btn-danger" on-click="deleteNote:{{ id }}">Borrar nota</a>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="col-sm-12">
-                            <a class="btn btn-danger" href="{{URL::to('deleteNote')}}?idNote={{$note->id}}">Borrar nota</a>
-                          </div>
-                        </div>
-                      </div>
+                      {{/each}}
                     </div>
-                  @endforeach
-                </div>
-              @endif
-            </div>
-            <div class="col-sm-12">
-              <button type="button" class="btn btn-primary btn-block" id="add-note">Agregar Nota</button>
-            </div>
+                  {{ else }}
+                    <h3>No hay notas registradas para el trabajo de titulación</h3>
+                  {{ /if }}
+              </div>
+              <div class="col-sm-12">
+                <button type="button" class="btn btn-primary btn-block" on-click="addNote">Agregar Nota</button>
+              </div>
+            </script>
           </div>
         </div>
       </div>
@@ -251,16 +319,20 @@
             <h3>Movilidad Estudiantil en el programa.</h3>
           </div>
           <div class="col-sm-4">
-            <div class="form-group">
-              <label>Movilidades registradas</label>
-              <select id="movilities" class="form-control" size="10">
-                @foreach($movilities as $movility)
-                  <option value="{{$movility->id}}">{{$movility->nombre}}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-primary btn-block" id="add-movility">Agregar Movilidad</button>
+            <div id="movilities-holder">
+              <script id="movilities-template" type="text/ractive">
+              <div class="form-group">
+                <label>Movilidades registradas</label>
+                <select class="form-control" size="10">
+                    {{#each movilities}}
+                      <option on-click="loadMovility:{{id}}">{{nombre}}</option>
+                    {{/each}}
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="button" class="btn btn-primary btn-block" id="add-movility">Agregar Movilidad</button>
+              </div>
+              </script>
             </div>
           </div>
           <div class="col-sm-8" id="movility-holder">
@@ -270,8 +342,6 @@
             <div class="spinner">
               <i class="fa fa-spinner fa-5x fa-pulse"></i>
             </div>
-            <form id="stored-movility" action="{{URL::to('/updateMovility')}}" method="POST">
-              {{csrf_field()}}
               <input type="hidden" name="movilityId" id="movilityId"/>
               <div class="form-group">
                 <label>Nombre</label>
@@ -296,7 +366,6 @@
             <div class="form-group">
               <button type="button" class="btn btn-danger" id="movility-delete">Borrar movilidad</button>
               <button type="submit" class="btn btn-primary">Actualizar movilidad</button>
-            </form>
             </div>
           </div>
       </div>

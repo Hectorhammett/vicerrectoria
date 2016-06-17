@@ -3,11 +3,19 @@
   var Programa = require(global.models)("Program")
   var Unidad = require(global.models)("Unit");
   var Materia = require(global.models)("Subject");
+  var Trabajo = require(global.models)("Work");
+  var Nota = require(global.models)("Note");
+  var Movilidad = require(global.models)("Movility");
   var spinner = $(".loading-main");
+  var Validator = require("validatorjs");
+  Validator.useLang('es');
   var overviewHeader;
   var activity;
   var unitsHolder;
   var editUnit;
+  var workHolder;
+  var notesHolder;
+  var movilitiesHolder;
   var counter;
   var currentStudent;
   var currentProgram;
@@ -48,6 +56,25 @@
           $.notify("No se puede guardar un semestre/cuatrimestre sin materias","error");
       }
     })
+    workHolder = new Ractive({
+      el: '#work-info-holder',
+      template: '#work-info-template'
+    });
+    notesHolder = new Ractive({
+      el: "#notes-holder",
+      template: "#notes-template"
+    });
+    notesHolder.on({
+      addNote: function(){
+        $("#modal-add-note").modal("show").one("hidden.bs.modal",function(){
+          $("input[name='Note']").val("");
+        });
+      }
+    });
+    movilityHolder = new Ractive({
+      el: "movilities-holder",
+      template: "movilities-template",
+    });
     new Estudiante({
       matricula: global.student
     }).fetch({
@@ -57,12 +84,22 @@
         }},
         {units: function(query){
           query.where("idPrograma",global.program)
-        }}
+        }},
+        {works: function(query){
+          query.where("idPrograma",global.program)
+        }},
+        {movilities: function(query){
+          query.where("idPrograma",global.program)
+        }},
+        "notes",
       ]
     }).then(function(estudiante){
       currentStudent = estudiante;
       estudiante = estudiante.toJSON();
       programa = estudiante.programs[0];
+      trabajo = estudiante.works[0]
+      notas = estudiante.notes;
+      movilidades = estudiante.movilities;
       currentProgram = programa;
       console.log(estudiante);
       overviewHeader.set({
@@ -73,6 +110,16 @@
         email: estudiante.email,
         telefono: estudiante.telefono
       });
+      workHolder.set({
+        trabajo: trabajo,
+      })
+      workHolder.on({
+        updateWork: function(){
+          saveUpdatedWork(this.get("trabajo"));
+        }
+      });
+      loadMovilities(movilidades);
+      loadNotes(notas);
       loadActivity(estudiante,programa);
     }).catch(function(err){
       $.notify("Hubo un error. Favor de reiniciar la aplicación","error");
@@ -199,6 +246,33 @@
     });
   })
 
+  $(document).on("click","#save-new-note",function(){
+    var rules = {
+      Note: "required"
+    };
+    var data = {
+      Note: $("textarea[name='Note']").val()
+    }
+    var validator = new Validator(data,rules);
+    validator.setAttributeNames({
+      Note: "Nota"
+    });
+    if(validator.fails()){
+      $.notify(validator.errors.first('Note'));
+    }
+    else{
+      new Nota({
+        idTrabajo: notesHolder.get("workId"),
+        notas: data.Note
+      }).save().then(function(note){
+        $.notify("La nota se ha guardado correctamente","success");
+      }).catch(function(err){
+        $.notify("Hubo un error. Favor de reiniciar la aplicación.","error");
+        console.error(err);
+      })
+    }
+  });
+
   function saveEditedSemester(subjects,idUnit){
     console.log(subjects, idUnit);
     new Materia().where({
@@ -233,11 +307,57 @@
     });
   }
 
+  function saveUpdatedWork(trabajo){
+    var rules = {
+      nombreTutor: "required",
+      linea: "required"
+    }
+
+    var validator = new Validator(trabajo,rules);
+    validator.setAttributeNames({
+      nombreTutor: "Nombre de tutor",
+      linea: "Línea de generación y ampliación del conocimiento"
+    });
+
+    if(validator.fails()){
+      var errors = validator.errors.all();
+      var string = "";
+      for(x in errors){
+        string+= errors[x] + "\n";
+      }
+      $.notify(string,"error");
+    }
+    else{
+      new Trabajo({
+        id: workHolder.get("trabajo").id
+      }).save(workHolder.get("trabajo")).then(function(){
+        $.notify("El trabajo de titulación se ha actualizado correctamente","success");
+      }).catch(function(err){
+        $.notify("Hubo un error. Favor de reiniciar la aplicación","error");
+        consol.error(err);
+      });
+    }
+  }
+
   function loadActivity(estudiante,programa){
     activity.set({
         total:estudiante.units.length, 
         formato: (programa.formato == "semestral")? "Semestres" : "Cuatrimestres",
         units: estudiante.units
       })
+  }
+
+  function loadNotes(notes){
+    console.log(trabajo);
+    notesHolder.set({
+      notes: notes,
+      workId: trabajo.id
+    })
+  }
+
+  function loadMovilities(movilities){
+    notesHolder.set({
+      movilities: movilities
+    })
   }
 }( window.overview = window.overview || {}, jQuery ));
